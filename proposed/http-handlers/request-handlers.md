@@ -3,7 +3,8 @@ HTTP Server Request Handlers
 
 This document describes common interfaces for HTTP server request handlers
 ("request handlers") and HTTP server middleware components ("middleware")
-that use HTTP messages as described by [PSR-7][psr7].
+that use HTTP messages as described by [PSR-7][psr7] or subsequent
+replacement PSRs.
 
 HTTP request handlers are a fundamental part of any web application. Server side
 code receives a request message, processes it, and produces a response message.
@@ -83,17 +84,16 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
+ * Handles a server request and produces a response
+ *
  * An HTTP request handler process a HTTP request and produces an HTTP response.
- * This interface defines the methods required to use the request handler.
  */
 interface RequestHandlerInterface
 {
     /**
-     * Handle the request and return a response.
+     * Handles a request and produces a response
      *
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
+     * May call other collaborating code to generate the response.
      */
     public function handle(ServerRequestInterface $request): ResponseInterface;
 }
@@ -110,20 +110,18 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
+ * Participant in processing a server request and response
+ *
  * An HTTP middleware component participates in processing an HTTP message,
- * either by acting on the request or the response. This interface defines the
- * methods required to use the middleware.
+ * either by acting on the request or the response. The middleware may create a
+ * response if conditions prevent the request from being processed further.
  */
 interface MiddlewareInterface
 {
     /**
-     * Process an incoming server request and return a response, optionally delegating
-     * response creation to a handler.
+     * Processes a request and the resulting response
      *
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     *
-     * @return ResponseInterface
+     * May delegate creating the response to the request handler.
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;
 }
